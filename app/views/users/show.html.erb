@@ -1,0 +1,24 @@
+<nav class="navbar navbar-fixed-top navbar-dark bg-inverse">
+  <span class="navbar-brand">Profile</span>
+
+  <form action="/sessions/<%= session[:user_id] %>" method="post">
+  <input type='hidden' name='authenticity_token' value='<%= form_authenticity_token %>'>
+  <input type='hidden' name='_method' value='delete'>
+  <ul class="nav navbar-nav navbar-right">
+  <button class="btn btn-primary btn-md navbar-nav navbar-btn" id="logout_button" type="submit">Log out</button>
+  </ul>
+  </form>
+
+  <a href="/ideas"><button class="btn btn-primary btn-md navbar-nav navbar-btn" id="ideas_button" type="submit">Ideas</button></a>
+</nav>
+
+<div class="container">
+  <div class="starter-template">
+      <h2>Name: <%= @user.name %></h2>
+      <h2>Alias: <%= @user.alias %></h2>
+      <h2>Email: <%= @user.email %></h2>
+      <hr>
+      <h4>Total # of Posts: <%= @user.ideas.count %></h4>
+      <h4>Total # of Likes: <%= @user.ideas_liked.count %></h4>
+  </div>
+</div>

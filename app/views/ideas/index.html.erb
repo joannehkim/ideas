@@ -1,0 +1,55 @@
+<nav class="navbar navbar-fixed-top navbar-dark bg-inverse">
+  <span class="navbar-brand">Hello, <%= @user.name %>!</span>
+
+  <form action="/sessions/<%= session[:user_id] %>" method="post">
+  <input type='hidden' name='authenticity_token' value='<%= form_authenticity_token %>'>
+  <input type='hidden' name='_method' value='delete'>
+  <ul class="nav navbar-nav navbar-right">
+  <button class="btn btn-primary btn-md navbar-nav navbar-btn" id="logout_button" type="submit">Log out</button>
+  </ul>
+  </form>
+</nav>
+
+<div class="container">
+  <div class="starter-template">
+<!-- <a href="/secrets" id="all_secrets">View All Ideas</a><br><br> -->
+    <h3>Add New Idea:</h3>
+<form action="/ideas" method="post">
+<input type='hidden' name='authenticity_token' value='<%= form_authenticity_token %>'>
+	<textarea class="form-control" rows="3" cols="50" name="idea[content]" placeholder="Post something witty here..."></textarea><br>
+	<button class="btn btn-warning btn-group btn-group-sm" role="group" id="create_idea_button">Create Idea</button>
+</form>
+<hr>
+
+<% @ideas.order(likes_count: :desc).each do |idea| %>
+	<p class="users"><a href="/users/<%= idea.user.id %>"><%= idea.user.alias %></a> says:</p>
+	<p class="posts"><%= idea.content %></p>
+
+	<p><a href="/ideas/<%= idea.id %>"><%= idea.likes.count %> people</a> like this</p>
+  
+  <% if idea.users_liked.include?(current_user) %>
+    <form action='/likes/<%= idea.idea_like current_user %>' method='post'>
+      <input type='hidden' name='_method' value='delete'>
+      <input type='hidden' name='authenticity_token' value='<%= form_authenticity_token %>'>
+      <button class="btn btn-warning btn-xs" id="unlike_button" type="submit">Unlike</button>
+    </form>
+
+  <% else %>
+    <form action='/likes' method='post'>
+      <input type='hidden' name='authenticity_token' value='<%= form_authenticity_token %>'>
+      <input type='hidden' name='idea_id' value='<%= idea.id %>'>
+      <button class="btn btn-m btn-danger" id="like_button" type="submit">Like</button>
+    </form>
+  <% end %>
+
+  <% if User.find(session[:user_id]) == idea.user %>
+    <form action='/ideas/<%= idea.id %>' method='post'>
+      <input type='hidden' name='_method' value='delete'>
+      <input type='hidden' name='authenticity_token' value='<%= form_authenticity_token %>'>
+      <button class="btn btn-m btn-success" id="unlike_button" type="submit">Delete Post</button>
+    </form>
+  <% end %>
+
+<hr>
+
+<% end %>
